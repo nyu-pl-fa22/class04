@@ -409,31 +409,32 @@ part of the binary code that make up the compiled function `f`.
 
 1. it knows all the registers whose values the execution of `f` may modify
 
-2. at each point where another function is called in `f`, it knows which
-   values that are stored in registers before the call will still be
-   needed by `f` after the call
+2. at each point where another function `g` is called in `f`, it knows which
+   values that are stored in registers before the call to `g` will still be
+   needed by `f` after the call returns.
 
-Thus, suppose we consider a scenario where the calling sequence leaves
+Consider a scenario where function `f` is called by another function `h`
+and suppose the calling sequence leaves
 all the work of saving registers to the callees. In this case, the
 callee portion of the calling sequence code in `f` would be responsible
 for saving and restoring all registers that are modified by the
 execution of `f`. This is because if we look at `f` in isolation, we don't
 know which of the original values stored in the registers modified by
-`f`, the caller of `f` will still need after `f` returns. In the worst case,
-it will need all of them. So `f` would have to save and restore them
-all. If the caller only needs a subset of the modified registers, `f`
+`f`, will still be needed by `h` after the call to `f` returns. In the worst case,
+`h` will need all of them. So `f` would have to save and restore them
+all. If `h` only needs a subset of the modified registers, `f`
 would potentially be doing a lot of unnecessary work (involving RAM
-accesses which are expensive)
+accesses which are expensive).
 
 The other extreme scenario is to leave all the work of saving the
 registers to the callers. In this case, for every call to another
-function that `f` makes, the caller portion of the calling sequence for
+function `g` in `f`, the caller portion of the calling sequence for
 that call would be responsible for saving and restoring all the
 registers whose values `f` still needs after the call. Again, this is
 because if we look at `f` in isolation, we don't know which of those
-registers will be modified by the callee. In the worst case, all of
+registers will be modified by `g`. In the worst case, all of
 them will be modified. So `f` would have to save and restore them
-all. If the callee only modifies a subset of the registers that `f`
+all. If `g` only modifies a subset of the registers that `f`
 still needs after the call, `f` would again be doing a lot of
 unnecessary work.
 
@@ -512,8 +513,8 @@ Question: What are advantages and disadvantages of inlining?
 
 * Advantages: avoid overhead, enable more compiler optimizations
 
-* Disadvantages: increases code size, can't always do inlining
-  (e.g. recursive procedures)
+* Disadvantages: increases code size. Also, can't always do inlining
+  (e.g. recursive functions).
 
 ### Evaluation Strategy and Parameter Passing Modes
 
