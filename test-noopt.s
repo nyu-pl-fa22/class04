@@ -17,7 +17,7 @@ Notes on the x86-64 architecture:
 
 - The stack grows down in memory. That is, subtracting a positive constant c from the stack pointer corresponds to allocating c bytes of stack memory.
 
-- The stack pointer can sometimes lack behind 
+- The stack pointer can sometimes lag behind.
 
 */
         
